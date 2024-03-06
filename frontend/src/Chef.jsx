@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const Chef = () => {
   const [formData, setFormData] = useState({
+    id: '',
     nom: '',
     prénom: '',
     email: '',
@@ -18,10 +19,10 @@ const Chef = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/employe/add', formData);
+      const response = await axios.post('http://localhost:7000/employe/add', formData);
       console.log('Employee added:', response.data);
-      // Optionally, reset the form after successful submission
       setFormData({
+        id: '',
         nom: '',
         prénom: '',
         email: '',
@@ -34,10 +35,28 @@ const Chef = () => {
     }
   };
 
+  const handleDelete = async () => {
+    const id = formData.id;
+    if (!id) {
+      console.error('ID is not provided');
+      return;
+    }
+    try {
+      const response = await axios.delete(`http://localhost:7000/employe/${id}`);
+      console.log('Employee deleted:', response.data);
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+    }
+  };
+
   return (
     <div>
       <h2>Add Employee</h2>
       <form onSubmit={handleSubmit}>
+        <div>
+          <label>ID:</label>
+          <input type="text" name="id" value={formData.id} onChange={handleChange} />
+        </div>
         <div>
           <label>Nom:</label>
           <input type="text" name="nom" value={formData.nom} onChange={handleChange} />
@@ -64,11 +83,20 @@ const Chef = () => {
         </div>
         <button type="submit">Add Employee</button>
       </form>
+
+      <div>
+        <h2>Employee Details</h2>
+        <p>Nom: {formData.nom}</p>
+        <p>Prénom: {formData.prénom}</p>
+        <button onClick={handleDelete}>Delete Employee</button>
+      </div>
     </div>
   );
 };
 
 export default Chef;
+
+
 
 
 
