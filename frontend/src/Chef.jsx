@@ -49,6 +49,20 @@ const Chef = () => {
     }
   };
 
+  const handleUpdate = async () => {
+    const id = formData.id;
+    if (!id) {
+      console.error('ID is not provided');
+      return;
+    }
+    try {
+      const response = await axios.put(`http://localhost:7000/employe/${id}`, formData);
+      console.log('Employee updated:', response.data);
+    } catch (error) {
+      console.error('Error updating employee:', error);
+    }
+  };
+
   return (
     <div>
       <h2>Add Employee</h2>
@@ -88,6 +102,7 @@ const Chef = () => {
         <h2>Employee Details</h2>
         <p>Nom: {formData.nom}</p>
         <p>Prénom: {formData.prénom}</p>
+        <button onClick={handleUpdate}>Update Employee</button>
         <button onClick={handleDelete}>Delete Employee</button>
       </div>
     </div>
@@ -95,6 +110,7 @@ const Chef = () => {
 };
 
 export default Chef;
+
 
 
 
