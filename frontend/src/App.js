@@ -1,11 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-import Chef from './Chef'
+import Chantier from './Chantier'
 
 function App() {
   return (
     <div className="App">
-      <Chef/>
+      <Chantier/>
     </div>
   );
 }
