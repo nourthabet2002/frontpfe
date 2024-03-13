@@ -1,11 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-import Chantier from './Chantier'
+import Admin from './Admin'
 
 function App() {
   return (
     <div className="App">
-      <Chantier/>
+      <Admin/>
     </div>
   );
 }
