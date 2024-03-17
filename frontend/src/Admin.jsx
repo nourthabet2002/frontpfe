@@ -9,11 +9,19 @@ const FormComponent = () => {
     email: '',
     password: '',
     numtel: ''
-    
+  });
+
+  const [serviceFormData, setServiceFormData] = useState({
+    name: '',
+    subCategory: ''
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleServiceChange = (e) => {
+    setServiceFormData({ ...serviceFormData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -28,10 +36,23 @@ const FormComponent = () => {
         email: '',
         password: '',
         numtel: ''
-        
       });
     } catch (error) {
       console.error('Error adding chef:', error);
+    }
+  };
+
+  const handleSubmitService = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:7000/service/add', serviceFormData);
+      console.log('Service added:', response.data);
+      setServiceFormData({
+        name: '',
+        subCategory: ''
+      });
+    } catch (error) {
+      console.error('Error adding service:', error);
     }
   };
 
@@ -63,6 +84,15 @@ const FormComponent = () => {
     }
   };
 
+  const handleReservationClick = async () => {
+    try {
+      const response = await axios.get('http://localhost:7000/Reservation');
+      console.log('Reservation data:', response.data);
+    } catch (error) {
+      console.error('Error fetching Reservation:', error);
+    }
+  };
+
   return (
     <div>
       <h2>Add chef</h2>
@@ -91,7 +121,6 @@ const FormComponent = () => {
           <label>Num Tel:</label>
           <input type="text" name="numtel" value={formData.numtel} onChange={handleChange} />
         </div>
-        
         <button type="submit">Add chef</button>
       </form>
 
@@ -102,9 +131,31 @@ const FormComponent = () => {
         <button onClick={handleUpdate}>Update chef</button>
         <button onClick={handleDelete}>Delete chef</button>
       </div>
+
+      <div>
+        <h2>Add Service</h2>
+        <form onSubmit={handleSubmitService}>
+          <div>
+            <label>Name:</label>
+            <input type="text" name="name" value={serviceFormData.name} onChange={handleServiceChange} />
+          </div>
+          <div>
+            <label>Subcategory:</label>
+            <input type="text" name="subCategory" value={serviceFormData.subCategory} onChange={handleServiceChange} />
+          </div>
+          <button type="submit">Add Service</button>
+        </form>
+      </div>
+
+      <div>
+        <h2>Reservation</h2>
+        <button onClick={handleReservationClick}>Make Reservation</button>
+      </div>
     </div>
   );
 };
 
-
 export default FormComponent;
+
+
+
