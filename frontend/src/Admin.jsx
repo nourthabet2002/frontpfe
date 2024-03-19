@@ -48,8 +48,8 @@ const FormComponent = () => {
       const response = await axios.post('http://localhost:7000/service/add', serviceFormData);
       console.log('Service added:', response.data);
       setServiceFormData({
-        name: '',
-        subCategory: ''
+        name: ''
+
       });
     } catch (error) {
       console.error('Error adding service:', error);
@@ -139,10 +139,7 @@ const FormComponent = () => {
             <label>Name:</label>
             <input type="text" name="name" value={serviceFormData.name} onChange={handleServiceChange} />
           </div>
-          <div>
-            <label>Subcategory:</label>
-            <input type="text" name="subCategory" value={serviceFormData.subCategory} onChange={handleServiceChange} />
-          </div>
+         
           <button type="submit">Add Service</button>
         </form>
       </div>
