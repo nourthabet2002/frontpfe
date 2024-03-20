@@ -1,42 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function AddService() {
-  const [serviceFormData, setServiceFormData] = useState({
-    name: '',
-    subCategory: ''
-  });
+function AddSubcategory() {
+  const [services, setServices] = useState([]);
+  const [selectedServiceId, setSelectedServiceId] = useState('');
+  const [selectedServiceName, setSelectedServiceName] = useState('');
+  const [category, setCategory] = useState('');
 
-  const handleServiceChange = (e) => {
-    setServiceFormData({ ...serviceFormData, [e.target.name]: e.target.value });
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get('http://localhost:7000/service');
+      setServices(response.data);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    }
   };
 
-  const handleSubmitService = async (e) => {
-    e.preventDefault();
+  const handleAddSubcategory = async () => {
     try {
-      const response = await axios.post('http://localhost:7000/service/add', serviceFormData);
-      console.log('Service added:', response.data);
-      setServiceFormData({
-        name: ''
+      // Assuming you have an endpoint to add subcategories
+      const response = await axios.post(`http://localhost:7000/${selectedServiceId}/categorie/add`, {
+        category: category
       });
+      console.log('Subcategory added:', response.data);
+      // Reset form or update UI as needed
     } catch (error) {
-      console.error('Error adding service:', error);
+      console.error('Error adding subcategory:', error);
     }
+  };
+
+  const handleServiceChange = (e) => {
+    const selectedService = services.find(service => service._id === e.target.value);
+    setSelectedServiceId(e.target.value);
+    setSelectedServiceName(selectedService ? selectedService.name : '');
   };
 
   return (
     <div>
-      <h2>Add Service</h2>
-      <form onSubmit={handleSubmitService}>
-        <div>
-          <label>Name:</label>
-          <input type="text" name="name" value={serviceFormData.name} onChange={handleServiceChange} />
-        </div>
-        {/* Other input fields for adding service */}
-        <button type="submit">Add Service</button>
-      </form>
+      <h2>Add Subcategory</h2>
+      <label>Select Service:</label>
+      <select value={selectedServiceId} onChange={handleServiceChange}>
+        <option value="">Select service</option>
+        {services.map((service) => (
+          <option key={service._id} value={service._id}>
+            {service.name}
+          </option>
+        ))}
+      </select>
+      <br />
+      <p>Selected Service: {selectedServiceName}</p>
+      <label>Category:</label>
+      <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
+      <br />
+      <button onClick={handleAddSubcategory}>Add Subcategory</button>
     </div>
   );
 }
 
-export default AddService;
+export default AddSubcategory;
+
+
+
+
+
+
+
+
+
+
+
+

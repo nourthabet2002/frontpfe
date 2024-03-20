@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function AddChef() {
   const [formData, setFormData] = useState({
-    id: '',
+   
     nom: '',
     prénom: '',
     email: '',
@@ -22,7 +22,7 @@ function AddChef() {
       const response = await axios.post('http://localhost:7000/add', formData);
       console.log('chef added:', response.data);
       setFormData({
-        id: '',
+       
         nom: '',
         prénom: '',
         email: '',
@@ -38,10 +38,7 @@ function AddChef() {
     <div>
       <h2>Add chef</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>ID:</label>
-          <input type="text" name="id" value={formData.id} onChange={handleChange} />
-        </div>
+        
         <div>
           <label>Nom:</label>
           <input type="text" name="nom" value={formData.nom} onChange={handleChange} />
