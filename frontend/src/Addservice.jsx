@@ -1,67 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function AddSubcategory() {
+const AddServiceForm = () => {
   const [services, setServices] = useState([]);
-  const [selectedServiceId, setSelectedServiceId] = useState('');
-  const [selectedServiceName, setSelectedServiceName] = useState('');
+  const [selectedService, setSelectedService] = useState('');
   const [category, setCategory] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    // Fetch services from the server when the component mounts
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get('http://localhost:7000/service');
+        setServices(response.data); // Assuming the response is an array of service objects with properties like _id and name
+      } catch (error) {
+        console.error('Failed to fetch services:', error);
+        setError('Failed to fetch services');
+      }
+    };
+
     fetchServices();
   }, []);
 
-  const fetchServices = async () => {
+  const addService = async () => {
     try {
-      const response = await axios.get('http://localhost:7000/service');
-      setServices(response.data);
+      const apiUrl = "http://localhost:7000/service/add";
+      const response = await axios.post(apiUrl, { name: selectedService, category });
+      console.log("Service added successfully:", response.data);
+      // Reset selectedService and category after adding the service
+      setSelectedService('');
+      setCategory('');
+      // Optionally, fetch services again to update the list
+      // fetchServices();
     } catch (error) {
-      console.error('Error fetching services:', error);
+      console.error("Failed to add service:", error);
+      setError('Failed to add service');
     }
-  };
-
-  const handleAddSubcategory = async () => {
-    try {
-      // Assuming you have an endpoint to add subcategories
-      const response = await axios.post(`http://localhost:7000/${selectedServiceId}/categorie/add`, {
-        category: category
-      });
-      console.log('Subcategory added:', response.data);
-      // Reset form or update UI as needed
-    } catch (error) {
-      console.error('Error adding subcategory:', error);
-    }
-  };
-
-  const handleServiceChange = (e) => {
-    const selectedService = services.find(service => service._id === e.target.value);
-    setSelectedServiceId(e.target.value);
-    setSelectedServiceName(selectedService ? selectedService.name : '');
   };
 
   return (
     <div>
-      <h2>Add Subcategory</h2>
-      <label>Select Service:</label>
-      <select value={selectedServiceId} onChange={handleServiceChange}>
-        <option value="">Select service</option>
-        {services.map((service) => (
-          <option key={service._id} value={service._id}>
-            {service.name}
-          </option>
-        ))}
-      </select>
+      <h2>Add Service</h2>
+      {error && <p>{error}</p>}
+      <label>
+        Select Service:
+        <select value={selectedService} onChange={(e) => setSelectedService(e.target.value)}>
+          <option value="">Select a service</option>
+          {services.map(service => (
+            <option key={service._id} value={service.name}>{service.name}</option>
+          ))}
+        </select>
+      </label>
       <br />
-      <p>Selected Service: {selectedServiceName}</p>
-      <label>Category:</label>
-      <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
+      <label>
+        Category:
+        <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
+      </label>
       <br />
-      <button onClick={handleAddSubcategory}>Add Subcategory</button>
+      <button onClick={addService}>Add Service</button>
     </div>
   );
-}
+};
 
-export default AddSubcategory;
+export default AddServiceForm;
+
+
+
+
+
+
 
 
 
